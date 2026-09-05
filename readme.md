@@ -1,7 +1,7 @@
 <p align="center">
   <img src="./banr.png" width="100%" alt="Header Banner" />
 </p>
-# EMULATOR-non_existing
+# EMULATOR
 
 A custom CPU emulator and bare-metal software stack built from first principles.
 
