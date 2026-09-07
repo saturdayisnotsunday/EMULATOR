@@ -1,42 +1,52 @@
-#include <stdio.h>
-#include "alu.h"
 #include <stdbool.h>
+#include <stdio.h>
+#include <string.h>
 
-struct _register { 
-    int R[8];  
-    bool oR[8];    
-    int Rfull; 
+#include "alu.h"
+
+struct CPU {
+    // registers
+    int R[8];
+    bool oR[8];
+    int Rfull;
+    // rest _ _ _
 };
 
-
-
-int main() {
-    unsigned int a = 1;
-    unsigned int b = 3; 
-    
-    
-    struct addition r = addnum(a, b); 
-    struct _register Reg = {
+struct CPU c = {
     .oR = {false, false, false, false, false, false, false, false},
-    .Rfull = 0
+    .Rfull = 0,
 };
-    
-    
-    printf("Result of %u + %u = %u\n", a, b, r.sum);
-    printf("Overflow status: %d\n", r.overflow_add);
-    // Reg.R[0] = r.sum;
-    
-    for (int i = 0, j = 7; i < j; i++) {
-    if(Reg.oR[i]==false){
-        Reg.R[i] = r.sum;
-        printf("saved at Reg.R[%i]",i);
-        break;
+
+int ArithematicUnit(const char *type, unsigned int a, unsigned int b)
+{
+    if (strcmp("add", type) == 0) {
+        struct addition r = addnum(a, b);
+
+        for (int i = 0; i < 8; i++) {
+            if (c.oR[i] == false) {
+                c.R[i] = r.sum;
+                c.oR[i] = true;
+                break;
+            }
+        }
+    } else if (strcmp("sub", type) == 0) {
+        struct subtraction r = subnum(a, b);
+
+        for (int i = 0; i < 8; i++) {
+            if (c.oR[i] == false) {
+                c.R[i] = r.result;
+                c.oR[i] = true;
+                break;
+            }
+        }
+    } else {
+        printf("[DEBUG, cpu.c] unknown arithmetic input \"%s\" ", type);
     }
-    }
 
-
-
-    
     return 0;
 }
 
+int cpu_run()
+{
+    return 0;
+}

@@ -27,3 +27,6 @@ used google for:
         sb.underflow = 0; // Safe subtraction
     }
     
+Took help of chatgpt for:
+-> To understand how to redesign components and setup cpu.c to be made as a     callable function type to motherboard.c
+-> redegined strcutre insdie cpu.c by learning from the above stated
