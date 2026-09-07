@@ -15,3 +15,15 @@ four states.
 
 The goal is not simply to emulate an existing processor, but to understand the
 boundary between hardware architecture and the software that depends on it.
+
+
+used google for:
+
+    printf("Result of %u + %u = %u\n", a, b, r.sum);
+    // NOTE: i need to know about undeflow using google
+    if (b > a) {
+        sb.underflow = 1; // Underflow/Borrow occurred  
+    } else {
+        sb.underflow = 0; // Safe subtraction
+    }
+    
