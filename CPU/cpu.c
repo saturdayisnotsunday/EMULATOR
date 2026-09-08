@@ -107,6 +107,7 @@ int cpu_run(int initype)
                 printf("Line content: %s\n", line);
                 // prasing and processing logics here
                 //======
+                //printf("tokens:%s\n:",);
                 line = strtok(NULL, "\r\n");
             }
         }
