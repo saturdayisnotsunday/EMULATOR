@@ -18,7 +18,7 @@ boundary between hardware architecture and the software that depends on it.
 
 
 used google for:
-
+    
     printf("Result of %u + %u = %u\n", a, b, r.sum);
     // NOTE: i need to know about undeflow using google
     if (b > a) {
@@ -26,7 +26,13 @@ used google for:
     } else {
         sb.underflow = 0; // Safe subtraction
     }
+
+
+    char *line = strtok(c.instructions,"\r\n");
+    
     
 Took help of chatgpt for:
 -> To understand how to redesign components and setup cpu.c to be made as a     callable function type to motherboard.c
 -> redegined strcutre insdie cpu.c by learning from the above stated
+
+Took help from this source:[text](https://stackoverflow.com/questions/174531/how-to-read-the-content-of-a-file-to-a-string-in-c)    for effectively getting a file reading program in C
