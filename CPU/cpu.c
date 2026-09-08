@@ -12,6 +12,14 @@ struct CPU {
     char instructions[40];
     // rest _ _ _
 };
+struct instructions{
+      char _operator[10]; //0
+      char arg1[10];     //1
+      char arg2[10];     //2
+      char action[10];   //3
+      char end[10];      //4
+};
+
 
 struct CPU c = {
     .oR = {false, false, false, false, false, false, false, false},
@@ -57,18 +65,36 @@ so we have to create initialisation types that is doing the specific type of tas
 */
 
 // update readme file for line no
-int interpreter(char *line)
-{
-    char *token;
+//it was really painful to deal with tokenisation loops so i chnaged it quite a bit like it was a whole lot of change
+int tokeassigner(char *line)
+{   
+    struct instructions it; //so that at the ned it get free on its own
+    char *operator;
+    char *arg1;
+    char *arg2;
+    char *action;
+    char *destination;
 
-    token = strtok(line, " ");
+    operator = strtok(line, " ");
+    arg1 = strtok(NULL, " ");
+    arg2 = strtok(NULL, " ");
+    action = strtok(NULL, " ");
+    destination = strtok(NULL, " ");
 
-    while (token != NULL) {
-        printf("Token: %s\n", token);
-
-        token = strtok(NULL, " ");
-    }
-
+    //printf("Operator: %s\n", operator);
+    strcpy(it._operator,operator);
+    //printf("Argument 1: %s\n", arg1);
+    strcpy(it.arg1, arg1);
+    //printf("Argument 2: %s\n", arg2);
+    strcpy(it.arg2, arg2);
+    //printf("Action: %s\n", action);
+    strcpy(it.action, action);
+    //printf("Destination: %s\n", destination);
+    strcpy(it.end, destination);
+    
+    return 0;
+}
+int interpreter(){
     return 0;
 }
 int cpu_run(int initype)
@@ -118,7 +144,7 @@ int cpu_run(int initype)
             while(line != NULL){
                 printf("Line content: %s\n", line);
                 // prasing and processing logics here
-                interpreter(line);
+                tokeassigner(line);
                 //======
                 //printf("tokens:%s\n:",);
                 line = strtok(NULL, "\r\n");
