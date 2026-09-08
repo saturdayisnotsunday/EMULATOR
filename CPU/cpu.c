@@ -57,10 +57,20 @@ so we have to create initialisation types that is doing the specific type of tas
 */
 
 
-// int interpreter(){
-//     return 0;
-// }
+int interpreter(char *line)
+{
+    char *token;
 
+    token = strtok(line, " ");
+
+    while (token != NULL) {
+        printf("Token: %s\n", token);
+
+        token = strtok(NULL, " ");
+    }
+
+    return 0;
+}
 int cpu_run(int initype)
 {
     if(initype == 0){
@@ -93,7 +103,9 @@ int cpu_run(int initype)
             }
             fclose (f);
             printf("content: %s\n", buffer);
-            buffer = c.instructions;
+            //buffer = c.instructions; --> this was the issue 
+            //fixed :
+            strcpy(c.instructions, buffer);
         }
         else 
         {
@@ -106,6 +118,7 @@ int cpu_run(int initype)
             while(line != NULL){
                 printf("Line content: %s\n", line);
                 // prasing and processing logics here
+                interpreter(line);
                 //======
                 //printf("tokens:%s\n:",);
                 line = strtok(NULL, "\r\n");
