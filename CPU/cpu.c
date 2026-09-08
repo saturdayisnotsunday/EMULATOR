@@ -55,6 +55,35 @@ int ArithematicUnit(const char *type, unsigned int a, unsigned int b)
     return 0;
 }
 
+
+/*
+structure :/
+0 : 
+1: operator, 
+2: number,
+3: number,
+4: next line, jump , end/exit/turn off
+*/
+// i don't know how but just by adding '*' fixed the issue
+int interpreter(char *ins0, char *ins1, char *ins2, char *ins3, char *ins4){
+    if(strcmp(ins0,"ADD")){
+
+    }
+    else if(strcmp(ins0,"SUB")){
+
+    }
+    else if(strcmp(ins0,"DIV")){
+
+    }
+    else if(strcmp(ins0,"MUL")){
+
+    }
+    else if(strchr(ins0,'R') != NULL){
+    
+    }
+    return 0;
+}
+
 /*
 so we have to create initialisation types that is doing the specific type of tasks ona specifc type of initalization
 ####
@@ -91,12 +120,11 @@ int tokeassigner(char *line)
     strcpy(it.action, action);
     //printf("Destination: %s\n", destination);
     strcpy(it.end, destination);
+    interpreter(it._operator,it.arg1,it.arg2, it.action, it.end);
     
     return 0;
 }
-int interpreter(){
-    return 0;
-}
+
 int cpu_run(int initype)
 {
     if(initype == 0){
