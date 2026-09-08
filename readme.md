@@ -30,9 +30,9 @@ used google for:
 
     char *line = strtok(c.instructions,"\r\n");
     
-    
+
 Took help of chatgpt for:
 -> To understand how to redesign components and setup cpu.c to be made as a     callable function type to motherboard.c
 -> redegined strcutre insdie cpu.c by learning from the above stated
-
+-> tokenising at line no 60 at present of this commit
 Took help from this source:[text](https://stackoverflow.com/questions/174531/how-to-read-the-content-of-a-file-to-a-string-in-c)    for effectively getting a file reading program in C
