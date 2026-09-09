@@ -31,6 +31,7 @@ used google for:
  [+]   char *line = strtok(c.instructions,"\r\n");
     
  [+]   strchr
+ [+] the newly created em(); function i do not know C that much so i sometimes needs help for little advance things like "\0' was unknown to me and so the sscanf()
 
 Took help of chatgpt for:
 -> To understand how to redesign components and setup cpu.c to be made as a     callable function type to motherboard.c
