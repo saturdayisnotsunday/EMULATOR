@@ -128,11 +128,12 @@ int interpreter(char *ins0, char *ins1, char *ins2, char *ins3, char *ins4){
         {
               if(strcmp(effi.ext1, "R")==0){
                 fillRegister(r.sum,atoi(effi.ext2));
+                printf("stored '%i' at %i",atoi(effi.ext1), atoi(effi.ext2));
               }
         }
         if(strcmp(ins4,"HALT")==0){
             printf("off");
-            EXIT_SUCCESS; // i guess it will stop there
+            exit(EXIT_SUCCESS); // i guess it will stop there
         } else if(strcmp(ins4,effi.ext1)==0){
                 if(strcmp(effi.ext1, "J")==0){
                     printf("not implemented yet");
@@ -157,7 +158,7 @@ int interpreter(char *ins0, char *ins1, char *ins2, char *ins3, char *ins4){
         }
         if(strcmp(ins4,"HALT")==0){
             printf("off");
-            EXIT_SUCCESS; // i guess it will stop there
+            exit(EXIT_SUCCESS); // i guess it will stop there
         } else if(strcmp(ins4,effi.ext1)==0){
                 if(strcmp(effi.ext1, "J")==0){
                     printf("not implemented yet");
@@ -255,6 +256,7 @@ int tokeassigner(char *line)
     strcpy(it.action, action);
     //printf("Destination: %s\n", destination);
     strcpy(it.end, destination);
+    ew(destination);
     interpreter(it._operator,it.arg1,it.arg2, it.action, it.end);
     
     return 0;
