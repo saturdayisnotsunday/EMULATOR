@@ -128,7 +128,7 @@ int interpreter(char *ins0, char *ins1, char *ins2, char *ins3, char *ins4){
         {
               if(strcmp(effi.ext1, "R")==0){
                 fillRegister(r.sum,atoi(effi.ext2));
-                printf("stored '%i' at %i",atoi(effi.ext1), atoi(effi.ext2));
+                printf("stored '%i' at R%i\n",atoi(effi.ext1), atoi(effi.ext2));
               }
         }
         if(strcmp(ins4,"HALT")==0){
@@ -153,7 +153,7 @@ int interpreter(char *ins0, char *ins1, char *ins2, char *ins3, char *ins4){
         {
               if(strcmp(effi.ext1, "R")==0){
                 fillRegister(r.result,atoi(effi.ext2));
-                printf("stored '%i' at %i",atoi(effi.ext1), atoi(effi.ext2));
+                printf("stored '%i' at R%i\n",atoi(effi.ext1), atoi(effi.ext2));
               }
         }
         if(strcmp(ins4,"HALT")==0){
