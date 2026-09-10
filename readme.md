@@ -39,3 +39,4 @@ Took help of chatgpt for:
 -> tokenising at line no 60 at present of this commit
 -> i dropped the above tokenisation idea and tired to deduce how to do it and came up with using the strtok the theory is clear and i explained it to chatgpt and asked for minimal exact syntax(line 69 whic which was line 60 previously)
 Took help from this source:[text](https://stackoverflow.com/questions/174531/how-to-read-the-content-of-a-file-to-a-string-in-c)    for effectively getting a file reading program in C
+-> to run cpu_run() function in motherboard.c as it used something unexpected and which i never knew
