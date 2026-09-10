@@ -65,40 +65,40 @@ void ew(char word[]){
   effi.ext1[1] = '\0';
   effi.ext2[1] = '\0';
 }
+// i guess currently useless
+// int ArithematicUnit(const char *type, unsigned int a, unsigned int b, int des)
+// {
+//     if (strcmp("add", type) == 0)
+//     {
+//         struct addition r = addnum(a, b);
 
-int ArithematicUnit(const char *type, unsigned int a, unsigned int b, int des)
-{
-    if (strcmp("add", type) == 0)
-    {
-        struct addition r = addnum(a, b);
-
-        // for (int i = 0; i < 8; i++) {
-        //     if (c.oR[i] == false) {
-        //         c.R[i] = r.sum;
-        //         c.oR[i] = true;
-        //         break;
-        //     }
-        fillRegister(r.sum, des);
+//         // for (int i = 0; i < 8; i++) {
+//         //     if (c.oR[i] == false) {
+//         //         c.R[i] = r.sum;
+//         //         c.oR[i] = true;
+//         //         break;
+//         //     }
+//         fillRegister(r.sum, des);
         
-    } else if (strcmp("sub", type) == 0) {
-        struct subtraction r = subnum(a, b);
+//     } else if (strcmp("sub", type) == 0) {
+//         struct subtraction r = subnum(a, b);
 
-        // for (int i = 0; i < 8; i++)
-        // {
-        //     if (c.oR[i] == false)
-        //     {
-        //         c.R[i] = r.result;
-        //         c.oR[i] = true;
-        //         break;
-        //     }
-        // }
-        fillRegister(r.result,des);
-    } else {
-        printf("[DEBUG, cpu.c] unknown arithmetic input \"%s\" ", type);
-    }
+//         // for (int i = 0; i < 8; i++)
+//         // {
+//         //     if (c.oR[i] == false)
+//         //     {
+//         //         c.R[i] = r.result;
+//         //         c.oR[i] = true;
+//         //         break;
+//         //     }
+//         // }
+//         fillRegister(r.result,des);
+//     } else {
+//         printf("[DEBUG, cpu.c] unknown arithmetic input \"%s\" ", type);
+//     }
 
-    return 0;
-}
+//     return 0;
+// }
 
 
 /*
@@ -112,76 +112,58 @@ structure :/
 i know the way this is made is not an optimised approach but currently i don't have much of time to 
 figure things out much deeply, i will try to optimise it later after watching few tutorials to make this as it is not that easy.BUT NOT IMPOSSIBLE THOUGH
 */
-// i don't know how but just by adding '*' fixed the issue
+
+void rest(char *ins3, char *ins4, char resultval){
+       if(strcmp(ins3, "STORE")==0)
+        {
+              if(strcmp(effi.ext1, "R")==0){
+                fillRegister(resultval,atoi(effi.ext2));
+                printf("[DEBUG, cpu.c , rest()]stored '%i' at R%i\n",atoi(effi.ext1), atoi(effi.ext2));
+              }
+        }
+        if(strcmp(ins4,"HALT")==0){
+            printf("[DEBUG, cpu.c , rest()] off");
+            exit(EXIT_SUCCESS); // i guess it will stop there
+        } else if(strcmp(ins4,effi.ext1)==0){
+                if(strcmp(effi.ext1, "J")==0){
+                    printf("[DEBUG, cpu.c , rest()] not implemented yet");
+                } //else if(strcmp(effi.ext1, "R")==0){
+                     
+                // }
+                // doing that much for additon was so time taking it took 37 minutes
+                // just copy and paste below and made some changes if needed from the above
+        }
+}
+
+// i don't know how but just by adding '*' it fixed the issue
 int interpreter(char *ins0, char *ins1, char *ins2, char *ins3, char *ins4){
     struct instructionformat ift;
+    
   //block for ins0, all keywords   
     if(strcmp(ins0,"ADD")==0){
         //taking example ADD 2 2 STORE R1
-        // if(){
-
-        // }
+        
+     
         unsigned int a = atoi(ins1);
         unsigned int b = atoi(ins2);
         struct addition r = addnum(a, b);
-        if(strcmp(ins3, "STORE")==0)
-        {
-              if(strcmp(effi.ext1, "R")==0){
-                fillRegister(r.sum,atoi(effi.ext2));
-                printf("stored '%i' at R%i\n",atoi(effi.ext1), atoi(effi.ext2));
-              }
-        }
-        if(strcmp(ins4,"HALT")==0){
-            printf("off");
-            exit(EXIT_SUCCESS); // i guess it will stop there
-        } else if(strcmp(ins4,effi.ext1)==0){
-                if(strcmp(effi.ext1, "J")==0){
-                    printf("not implemented yet");
-                } //else if(strcmp(effi.ext1, "R")==0){
-                     
-                // }
-                // doing that much for additon was so time taking it took 37 minutes
-                // just copy and paste below and made some changes if needed from above
-        }
-        
-    }
-    else if(strcmp(ins0,"SUB")==0){
-        unsigned int a = atoi(ins1);
-        unsigned int b = atoi(ins2);
-        struct subtraction r = subnum(a, b);
-        if(strcmp(ins3, "STORE")==0)
-        {
-              if(strcmp(effi.ext1, "R")==0){
-                fillRegister(r.result,atoi(effi.ext2));
-                printf("stored '%i' at R%i\n",atoi(effi.ext1), atoi(effi.ext2));
-              }
-        }
-        if(strcmp(ins4,"HALT")==0){
-            printf("off");
-            exit(EXIT_SUCCESS); // i guess it will stop there
-        } else if(strcmp(ins4,effi.ext1)==0){
-                if(strcmp(effi.ext1, "J")==0){
-                    printf("not implemented yet");
-                } //else if(strcmp(effi.ext1, "R")==0){
-                     
-                // }
-                // doing that much for additon was so time taking it took 37 minutes
-        }
-    }
-    else if(strcmp(ins0,"DIV")==0){
-        // will be implemented probably in next update when division will be added
-    //     unsigned int a = atoi(ins1);
-    //     unsigned int b = atoi(ins2);
-    //     struct addition r = addnum(a, b);
+        // now the implementation of the fucntion rest()
+        rest(ins3, ins4, r.sum);
+
+    // if we can see the work of this for ADD is done there if we keep on extending branches it will become a nightmare so if i made a sperate fucntion for such loop 
+    // and called it there then?
+
+
     //     if(strcmp(ins3, "STORE")==0)
     //     {
     //           if(strcmp(effi.ext1, "R")==0){
     //             fillRegister(r.sum,atoi(effi.ext2));
+    //             printf("stored '%i' at R%i\n",atoi(effi.ext1), atoi(effi.ext2));
     //           }
     //     }
     //     if(strcmp(ins4,"HALT")==0){
     //         printf("off");
-    //         EXIT_SUCCESS; // i guess it will stop there
+    //         exit(EXIT_SUCCESS); // i guess it will stop there
     //     } else if(strcmp(ins4,effi.ext1)==0){
     //             if(strcmp(effi.ext1, "J")==0){
     //                 printf("not implemented yet");
@@ -189,17 +171,68 @@ int interpreter(char *ins0, char *ins1, char *ins2, char *ins3, char *ins4){
                      
     //             // }
     //             // doing that much for additon was so time taking it took 37 minutes
+    //             // just copy and paste below and made some changes if needed from the above
     //     }
+        
      }
-    else if(strcmp(ins0,"MUL")==0){
-        // will be implemented probably in next update when multiplication will be added
-        // unsigned int a = atoi(ins1);
-        // unsigned int b = atoi(ins2);
-        // struct addition r = addnum(a, b);
+    else if(strcmp(ins0,"SUB")==0){
+        unsigned int a = atoi(ins1);
+        unsigned int b = atoi(ins2);
+        struct subtraction r = subnum(a, b);
+        rest(ins3, ins4, r.result);
         // if(strcmp(ins3, "STORE")==0)
         // {
         //       if(strcmp(effi.ext1, "R")==0){
-        //         fillRegister(r.sum,atoi(effi.ext2));
+        //         fillRegister(r.result,atoi(effi.ext2));
+        //         printf("stored '%i' at R%i\n",atoi(effi.ext1), atoi(effi.ext2));
+        //       }
+        // }
+        // if(strcmp(ins4,"HALT")==0){
+        //     printf("off");
+        //     exit(EXIT_SUCCESS); // i guess it will stop there
+        // } else if(strcmp(ins4,effi.ext1)==0){
+        //         if(strcmp(effi.ext1, "J")==0){
+        //             printf("not implemented yet");
+        //         } //else if(strcmp(effi.ext1, "R")==0){
+                     
+        //         // }
+        //         // doing that much for additon was so time taking it took 37 minutes
+        // }
+    }
+    else if(strcmp(ins0,"DIV")==0){
+        
+        unsigned int a = atoi(ins1);
+        unsigned int b = atoi(ins2);
+        struct division r = divnum(a, b);
+        rest(ins3, ins4, r.divres);
+        // if(strcmp(ins3, "STORE")==0)
+        // {
+        //       if(strcmp(effi.ext1, "R")==0){
+        //         fillRegister(r.divres,atoi(effi.ext2));
+        //       }
+        // }
+        // if(strcmp(ins4,"HALT")==0){
+        //     printf("off");
+        //     EXIT_SUCCESS; // i guess it will stop there
+        // } else if(strcmp(ins4,effi.ext1)==0){
+        //         if(strcmp(effi.ext1, "J")==0){
+        //             printf("not implemented yet");
+        //         } //else if(strcmp(effi.ext1, "R")==0){
+                     
+        //         // }
+        //         // doing that much for additon was so time taking it took 37 minutes
+        // }
+     }
+    else if(strcmp(ins0,"MUL")==0){
+        
+        unsigned int a = atoi(ins1);
+        unsigned int b = atoi(ins2);
+        struct multiplication r = mulnum(a, b);
+        rest(ins3, ins4, r.mulres);
+        // if(strcmp(ins3, "STORE")==0)
+        // {
+        //       if(strcmp(effi.ext1, "R")==0){
+        //         fillRegister(r.mulres,atoi(effi.ext2));
         //       }
         // }
         // if(strcmp(ins4,"HALT")==0){
@@ -215,7 +248,7 @@ int interpreter(char *ins0, char *ins1, char *ins2, char *ins3, char *ins4){
         // }
     }
     else if(strchr(ins0,'R') != NULL){
-     printf("not implemented yet");
+     printf("[DEBUG, cpu.c , interpreter()]not implemented yet");
     }
     return 0;
 }
@@ -290,17 +323,17 @@ int cpu_run(int initype)
             else 
     {
         
-                fprintf(stderr, "Error: Memory allocation failed.\n");
+                fprintf(stderr, "[DEBUG, cpu.c , cpu_run()]Error: Memory allocation failed.\n");
             }
             fclose (f);
-            printf("content: %s\n", buffer);
+            printf("[DEBUG, cpu.c , cpu_run()] content: %s\n", buffer);
             //buffer = c.instructions; --> this was the issue 
             //fixed :
             strcpy(c.instructions, buffer);
         }
         else 
         {
-          fprintf(stderr, "Error: Could not open file.\n");
+          fprintf(stderr, "[DEBUG, cpu.c , cpu_run()] Error: Could not open file.\n");
         }
         // now main work satrts from here 
 

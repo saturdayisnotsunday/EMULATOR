@@ -28,3 +28,36 @@ struct subtraction subnum(unsigned int a, unsigned int b){
     
     return sb;
 }
+
+struct division divnum(unsigned int a, unsigned int b) {
+    struct division dv;
+    
+    if (b == 0) {
+        dv.divres = 0;       
+        dv.overflow_div = 1; 
+        return dv;
+    }
+
+    dv.divres = a / b;
+    dv.overflow_div = 0; 
+    return dv;
+}
+
+// i took help using internet for multiplication as it used a new thing named limit.h
+#include <limits.h> 
+
+struct multiplication mulnum(unsigned int a, unsigned int b) {
+    struct multiplication ml;
+    ml.mulres = a * b;
+
+    // If a is 0, multiplication can never overflow
+    if (a != 0 && b > UINT_MAX / a) {
+        ml.overflow_mul = 1;
+    } else {
+        ml.overflow_mul = 0;
+    }
+
+    return ml;
+}
+
+
