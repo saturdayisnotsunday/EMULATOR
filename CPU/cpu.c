@@ -69,12 +69,12 @@ void ew(char word[]){
   effi.ext1[1] = '\0';
   effi.ext2[1] = '\0';
 }
-void rest(char *ins3, char *ins4, char resultval){
+void rest(char *ins3, char *ins4, int resultval){
        if(strcmp(ins3, "STORE")==0)
         {
               if(strcmp(effi.ext1, "R")==0){
                 fillRegister(resultval,atoi(effi.ext2));
-                printf("[DEBUG, cpu.c , rest()]stored '%i' at R%i\n",atoi(effi.ext1), atoi(effi.ext2));
+                printf("[DEBUG, cpu.c , rest()]stored '%i' at R%i\n",resultval, atoi(effi.ext2));
               }
         }
         if(strcmp(ins4,"HALT")==0){
