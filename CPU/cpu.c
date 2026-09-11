@@ -1,4 +1,5 @@
 #include <stdbool.h>
+#include <stddef.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -75,6 +76,7 @@ void rest(char *ins3, char *ins4, int resultval){
               if(strcmp(effi.ext1, "R")==0){
                 fillRegister(resultval,atoi(effi.ext2));
                 printf("[DEBUG, cpu.c , rest()]stored '%i' at R%i\n",resultval, atoi(effi.ext2));
+                return;
               }
         }
         if(strcmp(ins4,"HALT")==0){
@@ -124,6 +126,7 @@ int interpreter(char *ins0, char *ins1, char *ins2, char *ins3, char *ins4){
         struct addition r = addnum(a, b);
         
         rest(ins3, ins4, r.sum);
+        printf("ran after resty");
 
 
      }
@@ -204,6 +207,7 @@ int cpu_run(int initype)
         // source: https://stackoverflow.com/questions/174531/how-to-read-the-content-of-a-file-to-a-string-in-c
         char * buffer = 0;
         long length;
+        long line_Count;
         FILE * f = fopen ("rom.txt", "r"); // Changed to "r" if it's text; keep "rb" if it's a raw binary
 
         if (f)
@@ -220,12 +224,22 @@ int cpu_run(int initype)
         
                 size_t bytesRead = fread (buffer, 1, length, f);
                 buffer[bytesRead] = '\0'; 
-    }
+                if(bytesRead>0){
+                    line_Count = 1;
+                    for(size_t i = 0;i<bytesRead;i++)
+                    {
+                        if(buffer[i] == '\n'){
+                            line_Count++;
+                        }
+                    }
+                }
+            }
             else 
-    {
+            {
         
                 fprintf(stderr, "[DEBUG, cpu.c , cpu_run()]Error: Memory allocation failed.\n");
             }
+            
             fclose (f);
             printf("[DEBUG, cpu.c , cpu_run()] content: %s\n", buffer);
             //buffer = c.instructions; --> this was the issue 
@@ -243,7 +257,10 @@ int cpu_run(int initype)
             while(line != NULL){
                 printf("Line content: %s\n", line);
                 // prasing and processing logics here
-                tokeassigner(line);
+                for(int k = 0;k==line_Count;k++) {
+                 tokeassigner(line);
+                }
+                
                 //======
                 //printf("tokens:%s\n:",);
                 line = strtok(NULL, "\r\n");
