@@ -197,12 +197,19 @@ int interpreter(char *ins0, char *ins1, char *ins2, char *ins3, char *ins4){
          b_val = c.R[atoi(effi.ext2)];
          printf("R[%i] contains '%i'\n",atoi(effi.ext2), c.R[atoi(effi.ext2)]);
      } else {
-         b_val = (unsigned int)b;   // reuse the atoi(ins2) result already computed above
+         b_val = (unsigned int)b;   // reuse the atoi(ins2) result alrady computed above
      }
 
      unsigned int result = arithematicunit(ins0, a_val, b_val);
      printf("passed ins3:%s,ins4:%s\n", ins3, ins4);
      rest(ins3, ins4, result);
+ if(strcmp(ins0,"FREE")^(strcmp(ins1, "0")==0)^(strcmp(ins2, "0")==0)^(strcmp(ins3, "0")==0)^(strcmp(ins4, "0")==0))
+ {
+    printf("FREE block starts\n");
+    ew(ins1);
+    c.oR[atoi(effi.ext2)] = false;
+    printf("[DEBUG, cpu.c,interpreter] freed R[%i]\n", atoi(effi.ext2));
+ }
 
  }
     return 0;
@@ -310,7 +317,7 @@ int cpu_run(int initype)
          char *line = strtok_r(c.instructions, "\r\n", &line_save);
          while (line != NULL) {
          printf("Line content: %s\n", line);
-         printf("[DEBUG] given to token assinger: %s\n", line);
+         printf("[DEBUG, cpu.c, cpu_run()] given to token assinger: %s\n", line);
          tokeassigner(line);
          line = strtok_r(NULL, "\r\n", &line_save);
         } 
