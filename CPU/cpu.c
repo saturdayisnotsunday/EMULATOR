@@ -76,7 +76,7 @@ void rest(char *ins3, char *ins4, int resultval){
               if(strcmp(effi.ext1, "R")==0){
                 fillRegister(resultval,atoi(effi.ext2));
                 printf("[DEBUG, cpu.c , rest()]stored '%i' at R%i\n",resultval, atoi(effi.ext2));
-                return;
+                //return;
               }
         }
         if(strcmp(ins4,"HALT")==0){
@@ -126,7 +126,7 @@ int interpreter(char *ins0, char *ins1, char *ins2, char *ins3, char *ins4){
         struct addition r = addnum(a, b);
         
         rest(ins3, ins4, r.sum);
-        printf("ran after resty");
+        
 
 
      }
@@ -135,6 +135,7 @@ int interpreter(char *ins0, char *ins1, char *ins2, char *ins3, char *ins4){
         unsigned int b = atoi(ins2);
         struct subtraction r = subnum(a, b);
         rest(ins3, ins4, r.result);
+        
 
     }
     else if(strcmp(ins0,"DIV")==0){
@@ -153,7 +154,7 @@ int interpreter(char *ins0, char *ins1, char *ins2, char *ins3, char *ins4){
 
     }
     else if(strchr(ins0,'R') != NULL){
-     printf("[DEBUG, cpu.c , interpreter()]not implemented yet");
+     printf("[DEBUG, cpu.c , interpreter()]not implemented yet\n");
     }
     return 0;
 }
@@ -170,6 +171,7 @@ so we have to create initialisation types that is doing the specific type of tas
 //it was really painful to deal with tokenisation loops so i changed it quite a bit like it was a whole lot of change
 int tokeassigner(char *line)
 {   
+    
     struct instructions it; //so that at the end it get free on its own
     char *operator;
     char *arg1;
@@ -253,20 +255,17 @@ int cpu_run(int initype)
         // now main work starts from here 
 
         if (buffer){
-            char *line = strtok(c.instructions,"\r\n");
-            while(line != NULL){
-                printf("Line content: %s\n", line);
-                // prasing and processing logics here
-                for(int k = 0;k==line_Count;k++) {
-                 tokeassigner(line);
-                }
-                
-                //======
-                //printf("tokens:%s\n:",);
-                line = strtok(NULL, "\r\n");
-            }
+         char *line = strtok(c.instructions, "\r\n");
+         while (line != NULL) {
+         printf("Line content: %s\n", line);
+         printf("[DEBUG] given to token assinger: %s\n", line);
+         tokeassigner(line);
+         line = strtok(NULL, "\r\n");
+        } 
         }
-}           
+        }
+        
+         
     return 0;
 }
 
