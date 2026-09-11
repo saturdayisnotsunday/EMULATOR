@@ -203,7 +203,7 @@ int interpreter(char *ins0, char *ins1, char *ins2, char *ins3, char *ins4){
      unsigned int result = arithematicunit(ins0, a_val, b_val);
      printf("passed ins3:%s,ins4:%s\n", ins3, ins4);
      rest(ins3, ins4, result);
- if(strcmp(ins0,"FREE")^(strcmp(ins1, "0")==0)^(strcmp(ins2, "0")==0)^(strcmp(ins3, "0")==0)^(strcmp(ins4, "0")==0))
+ if(strcmp(ins0,"FREE")^(strcmp(ins2, "0")==0)^(strcmp(ins3, "0")==0)^(strcmp(ins4, "0")==0))
  {
     printf("FREE block starts\n");
     ew(ins1);
