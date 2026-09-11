@@ -1,4 +1,4 @@
-#define _POSIX_C_SOURCE 200809L
+//#define _POSIX_C_SOURCE 200809L
 
 #include <stdbool.h>
 #include <stddef.h>
@@ -14,7 +14,7 @@ struct CPU {
     int R[8];
     bool oR[8];
     int Rfull;
-    char instructions[40];
+    char *instructions; //overflow took an hour to debug that is cause segment fault issue
     // rest _ _ _
 };
 struct instructions{
@@ -49,33 +49,39 @@ struct extwordforinstruct effi;
 
 
 // all voids starts ========================================================================================
-void fillRegister(int val, int i)
-{       if((i-1) == -1){
-          for (int i = 0; i < 8; i++) 
-          {
-            if (c.oR[i] == false) 
-            {c.R[i] = val;
-                c.oR[i] = true;
-                break;
-            }
-          }
-        if((i-1) != -1){
-             c.R[i]= val;
-             c.oR[i] = true;
-        }
-                
-           }
+void fillRegister(int val, int i){
+
+ if(c.oR[i]==true ){
+    printf("[DEBUG, cpu.c fillREgister] error_type: RESGISTER_FULL couldn't save value at R[%i]  it contains '%i'\n",i,c.R[i]);
+    exit(EXIT_FAILURE);
+ } else if(i>7){
+    printf("[DEBUG, cpu.c fillREgister] error_type: REGISTER_NOT_FOUND couldn't save value at R[%i]\n",i);
+    exit(EXIT_FAILURE);
+ }else{
+    c.oR[i] = true;
+    c.R[i] = val;
+ }
+
 }
 // extarct no and letters from , example like J7 -> J, 7 ; R1 -> R,1
 // source: https://www.google.com/search?q=how+to+extract+J+and+7+separately+in+two+variables+in+C+from+%22J7%22&sca_esv=444dee17e46a57e2&sxsrf=APpeQnsas3LaoSjPHTEjTzjqKvki9Vn42g%3A1788946108708&source=chrome.ob&fbs=ABfTbFVyMZGZf1hfvX9uKjN_-G8cxpBkeIeqYwoCbfNVc4vKE96grTuFPBRY0pmGfUF9Jyg22UXWVTXr_K4O7baggKlodDnOkiIlASZntHySiVh0bwiIMNUypEJaxFrEl8I0sOjne2qkxDLXy2NTy6FTlX-i0YI5jtw6x8Px1e5ht4KE5hM6eaUTrrz4L1UACk_d4pB2REBAHEJb5UrMvB9LeWHyWa1Gfg&vsint=&aep=1&ntc=1&cs=1&sa=X&ved=2ahUKEwjitNPKl-GWAxUGTmwGHVCgB1IQ2J8OegQIFhAD&biw=1920&bih=993&dpr=1&mstk=AUtExfArvDwH7_MMHa_rjMoXAPx9eJho2f5sxtcKYHQECjgoXkqsxI7kk1BhYFbRoIQEtl3FeOTOwIz2Pn6n2tWX2s7tni-721tzzn6NyWwCu2oiShJGsSD4hrd5TqJ9tk9PQj7So23RPPtVv39v5Ls5mSWrIUoeNdD0-xnk3J4Ba2WPCfD1n6zbHNTPuhz6aHHA4op4W_nlj1aJ9jeNe2RasLb8r-BmbP4BdwrSt4qw3_mg-R-POJv4ECYiAkhdUBe2VJDkMtZPw371oUXiAtwGygbye_DusvGluktwEV4ZmGzIodGb3eUU7iVYKl9G_OFLQFj4yJ5DRiZrog&csuir=1&atvm=2&mtid=yiahasX1II2dseMPhcztiAo&udm=50
-void ew(char word[]){
-  sscanf(word, "%c%c", &effi.ext1[0], &effi.ext2[0]);
-  effi.ext1[1] = '\0';
-  effi.ext2[1] = '\0';
+void ew(char word[]) {
+    int len = strlen(word); //some thing magical
+    // Safety check: ensure that string has at least a letter and a number
+    if (len < 2)
+    {
+        return; 
+    }
+    effi.ext1[0] = word[0];        // always takes the first character ('J')
+    effi.ext2[0] = word[len - 1];  // the last character ('1', '7', or '3')
+    effi.ext1[1] = '\0';
+    effi.ext2[1] = '\0';
 }
+
 void rest(char *ins3, char *ins4, int resultval){
        if(strcmp(ins3, "STORE")==0)
         {
+              ew(ins4); 
               if(strcmp(effi.ext1, "R")==0){
                 fillRegister(resultval,atoi(effi.ext2));
                 printf("[DEBUG, cpu.c , rest()]stored '%i' at R%i\n",resultval, atoi(effi.ext2));
@@ -83,12 +89,12 @@ void rest(char *ins3, char *ins4, int resultval){
               }
         }
         if(strcmp(ins4,"HALT")==0){
-            printf("[DEBUG, cpu.c , rest()] off");
+            printf("[DEBUG, cpu.c , rest()] off\n");
             
             exit(EXIT_SUCCESS); // i guess it will stop there
         } else if(strcmp(ins4,effi.ext1)==0){
                 if(strcmp(effi.ext1, "J")==0){
-                    printf("[DEBUG, cpu.c , rest()] not implemented yet");
+                    printf("[DEBUG, cpu.c , rest()] not implemented yet\n");
                 } //else if(strcmp(effi.ext1, "R")==0){
                      
                 // }
@@ -181,6 +187,7 @@ int interpreter(char *ins0, char *ins1, char *ins2, char *ins3, char *ins4){
      if (a_is_reference) {
          ew(ins1);
          a_val = c.R[atoi(effi.ext2)];
+         printf("R[%i] contains '%i'\n",atoi(effi.ext2), c.R[atoi(effi.ext2)]);
      } else {
          a_val = (unsigned int)a;   // reuse the atoi(ins1) result already computed above
      }
@@ -188,11 +195,13 @@ int interpreter(char *ins0, char *ins1, char *ins2, char *ins3, char *ins4){
      if (b_is_reference) {
          ew(ins2);
          b_val = c.R[atoi(effi.ext2)];
+         printf("R[%i] contains '%i'\n",atoi(effi.ext2), c.R[atoi(effi.ext2)]);
      } else {
          b_val = (unsigned int)b;   // reuse the atoi(ins2) result already computed above
      }
 
      unsigned int result = arithematicunit(ins0, a_val, b_val);
+     printf("passed ins3:%s,ins4:%s\n", ins3, ins4);
      rest(ins3, ins4, result);
 
  }
@@ -287,7 +296,8 @@ int cpu_run(int initype)
             printf("[DEBUG, cpu.c , cpu_run()] content: %s\n", buffer);
             //buffer = c.instructions; --> this was the issue 
             //fixed :
-            strcpy(c.instructions, buffer);
+            //strcpy(c.instructions, buffer);
+            c.instructions = buffer;
         }
         else 
         {

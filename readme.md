@@ -32,6 +32,7 @@ used google for:
     
  [+]   strchr
  [+] the newly created em(); function i do not know C that much so i sometimes needs help for little advance things like "\0' was unknown to me and so the sscanf()
+ [+] for the new update in ew fucntion to support inputs like J123 for 'J' and atoi('123')
 
 Took help of chatgpt for:
 -> To understand how to redesign components and setup cpu.c to be made as a     callable function type to motherboard.c
@@ -40,3 +41,7 @@ Took help of chatgpt for:
 -> i dropped the above tokenisation idea and tired to deduce how to do it and came up with using the strtok the theory is clear and i explained it to chatgpt and asked for minimal exact syntax(line 69 whic which was line 60 previously)
 Took help from this source:[text](https://stackoverflow.com/questions/174531/how-to-read-the-content-of-a-file-to-a-string-in-c)    for effectively getting a file reading program in C
 -> to run cpu_run() function in motherboard.c as it used something unexpected and which i never knew
+
+Took help from calude:
+-> to debug the issue for why loop was not woking it was due to wrong conditioning of k==line_Count it should be < not ==
+
