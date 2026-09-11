@@ -1,9 +1,12 @@
+#define _POSIX_C_SOURCE 200809L
+
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include "alu.h"
+#include <ctype.h>
 
 
 // struct(s) begins ===================================================
@@ -110,52 +113,89 @@ i know the way this is made is not an optimised approach but currently i don't h
 figure things out much deeply, i will try to optimise it later after watching few tutorials to make this as it is not that easy.BUT NOT IMPOSSIBLE THOUGH
 */
 
-
+/*
+## let's define new instructions ##
+- ADD/SUB/DIV/MUL 2 2 STORE R1
+- ADD R1 R2 STORE R3
+- FREE R1
+*/
 
 // i don't know how but just by adding '*' it fixed the issue
+unsigned int arithematicunit(const char *type, unsigned int a, unsigned int b){
+    if (strcmp(type, "ADD") == 0) {
+        return addnum(a, b).sum;
+    }
+    if (strcmp(type, "SUB") == 0) {
+        return subnum(a, b).result;
+    }
+    if (strcmp(type, "DIV") == 0) {
+        return divnum(a, b).divres;
+    }
+    if (strcmp(type, "MUL") == 0) {
+        return mulnum(a, b).mulres;
+    }
+
+    return 0;
+}
+
+/* R<number> and J<number> are operand references, not numeric literals. */
+static bool is_register_or_jump(const char *operand)
+{
+    size_t i;
+
+    if ((operand[0] != 'R' && operand[0] != 'J') || operand[1] == '\0') {
+        return false;
+    }
+
+    for (i = 1; operand[i] != '\0'; i++) {
+        if (!isdigit((unsigned char)operand[i])) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
 int interpreter(char *ins0, char *ins1, char *ins2, char *ins3, char *ins4){
     struct instructionformat ift;
-    
+    int a = atoi(ins1);
+    int b = atoi(ins2);
+    bool a_is_reference = false;
+    bool b_is_reference = false;
 
-    if(strcmp(ins0,"ADD")==0){
-        //taking example ADD 2 2 STORE R1
-        
-     
-        unsigned int a = atoi(ins1);
-        unsigned int b = atoi(ins2);
-        struct addition r = addnum(a, b);
-        
-        rest(ins3, ins4, r.sum);
-        
+    /* atoi returns 0 for 0 and for non-numeric operands, so inspect Rn/Jn. */
+    if (a == 0) {
+        a_is_reference = is_register_or_jump(ins1);
+    }
+    if (b == 0) {
+        b_is_reference = is_register_or_jump(ins2);
+    }
 
+ if(!a_is_reference && !b_is_reference){
+    unsigned int result = arithematicunit(ins0, (unsigned int)a, (unsigned int)b);
 
+    rest(ins3, ins4, result);
+ } else if(a_is_reference || b_is_reference){
+     unsigned int a_val, b_val;
+
+     if (a_is_reference) {
+         ew(ins1);
+         a_val = c.R[atoi(effi.ext2)];
+     } else {
+         a_val = (unsigned int)a;   // reuse the atoi(ins1) result already computed above
      }
-    else if(strcmp(ins0,"SUB")==0){
-        unsigned int a = atoi(ins1);
-        unsigned int b = atoi(ins2);
-        struct subtraction r = subnum(a, b);
-        rest(ins3, ins4, r.result);
-        
 
-    }
-    else if(strcmp(ins0,"DIV")==0){
-        
-        unsigned int a = atoi(ins1);
-        unsigned int b = atoi(ins2);
-        struct division r = divnum(a, b);
-        rest(ins3, ins4, r.divres);
-    }
-    else if(strcmp(ins0,"MUL")==0){
-        
-        unsigned int a = atoi(ins1);
-        unsigned int b = atoi(ins2);
-        struct multiplication r = mulnum(a, b);
-        rest(ins3, ins4, r.mulres);
+     if (b_is_reference) {
+         ew(ins2);
+         b_val = c.R[atoi(effi.ext2)];
+     } else {
+         b_val = (unsigned int)b;   // reuse the atoi(ins2) result already computed above
+     }
 
-    }
-    else if(strchr(ins0,'R') != NULL){
-     printf("[DEBUG, cpu.c , interpreter()]not implemented yet\n");
-    }
+     unsigned int result = arithematicunit(ins0, a_val, b_val);
+     rest(ins3, ins4, result);
+
+ }
     return 0;
 }
 
@@ -178,12 +218,13 @@ int tokeassigner(char *line)
     char *arg2;
     char *action;
     char *destination;
+    char *token_save;
 
-    operator = strtok(line, " ");
-    arg1 = strtok(NULL, " ");
-    arg2 = strtok(NULL, " ");
-    action = strtok(NULL, " ");
-    destination = strtok(NULL, " ");
+    operator = strtok_r(line, " ", &token_save);
+    arg1 = strtok_r(NULL, " ", &token_save);
+    arg2 = strtok_r(NULL, " ", &token_save);
+    action = strtok_r(NULL, " ", &token_save);
+    destination = strtok_r(NULL, " ", &token_save);
 
     
     strcpy(it._operator,operator);
@@ -255,12 +296,13 @@ int cpu_run(int initype)
         // now main work starts from here 
 
         if (buffer){
-         char *line = strtok(c.instructions, "\r\n");
+         char *line_save;
+         char *line = strtok_r(c.instructions, "\r\n", &line_save);
          while (line != NULL) {
          printf("Line content: %s\n", line);
          printf("[DEBUG] given to token assinger: %s\n", line);
          tokeassigner(line);
-         line = strtok(NULL, "\r\n");
+         line = strtok_r(NULL, "\r\n", &line_save);
         } 
         }
         }
@@ -268,10 +310,3 @@ int cpu_run(int initype)
          
     return 0;
 }
-
-
-
-
-// int main(){
-//     cpu_run(0);
-// }
