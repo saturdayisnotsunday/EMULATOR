@@ -78,7 +78,7 @@ Click the dropdown below to view my complete system reasoning, design hypotheses
 <summary><b>Expand to read the Log Book</b></summary>
 <br>
 <p align="center">
-  '''<img src="./banr.png" width="100%" alt="Header Banner" />'''
+  <img src="./banr.png" width="100%" alt="Header Banner" />
 </p>
 
 </details>
