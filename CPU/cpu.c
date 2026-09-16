@@ -258,7 +258,7 @@ int tokeassigner(char *line)
     return 0;
 }
 
-int cpu_run(int initype)
+int cpu_run(int initype) 
 {
     if(initype == 0){
         printf("[DEBUG, cpu.c] initialization type 0\n");
