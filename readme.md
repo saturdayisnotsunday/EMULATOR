@@ -83,17 +83,39 @@ The goal is not simply to emulate an existing processor, but to understand the
 </details>
 
 # Engineering Architecture & Log Book 
-Click the dropdown below to view my complete system reasoning, design hypotheses, and low-level debugging logs directly:
+Click the dropdown below to view my complete system reasoning, design :
 
-<details>
-<summary><b>Expand to read the Log Book</b></summary>
-<br>
-<p align="center">
-  <img src="./banr.png" width="100%" alt="Header Banner" />
-</p>
+### Page 1
+![Page 1](pg1.jpg)
 
-</details>
+### Page 2
+![Page 2](pg2.jpg)
 
+### Page 3
+![Page 3](pg3.jpg)
 
+### Page 4
+![Page 4](pg4.jpg)
+
+### Page 5
+![Page 5](pg5.jpg)
+
+### Page 6
+![Page 6](pg6.jpg)
+
+### Page 7
+![Page 7](pg7.jpg)
+
+### Page 8
+![Page 8](pg8.jpg)
+
+### Page 9
+![Page 9](pg9.jpg)
+
+### Page 10
+![Page 10](pg10.jpg)
+
+### Page 11
+![Page 11](pg11.jpg)
 
 https://github.com/saturdayisnotsunday/EMULATOR
