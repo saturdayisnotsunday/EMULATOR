@@ -12,11 +12,10 @@ and operating system are all designed together rather than targeting an existing
 architecture.
 
 The current system begins with a binary CPU model and is being extended toward
-a quaternary architecture, where each computational digit can represent one of
-four states.
+a quaternary architecture(if research went successful), where each computational digit can represent one of four states.
 
 The goal is not simply to emulate an existing processor, but to understand the
-boundary between hardware architecture and the software that depends on it.
+ hardware architecture and the software that depends on it.
 
 <details>
 <summary><b>Used Google for</b></summary>
@@ -70,6 +69,18 @@ boundary between hardware architecture and the software that depends on it.
 
 </details>
 
+<details>
+<summary><b>Issues </b></summary>
+<br>
+<p align="center">
+  
+    Now the real issue left is to implement RAM(emulated) so it will be taking enough of time, the 
+    use is clear but the problem is how to implement in C syntx + enabling cpu.c to access it through motherboard.c
+
+    
+</p>
+
+</details>
 
 # Engineering Architecture & Log Book 
 Click the dropdown below to view my complete system reasoning, design hypotheses, and low-level debugging logs directly:
