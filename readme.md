@@ -77,6 +77,9 @@ The goal is not simply to emulate an existing processor, but to understand the
   
     Now the real issue left is to implement RAM(emulated) so it will be taking enough of time, the 
     use is clear but the problem is how to implement in C syntx + enabling cpu.c to access it through motherboard.c
+    => finally got a soultion, i will create sub initypes to keep a main initype run main initype unitl the end of its purpose
+    
+
 
     
 </p>

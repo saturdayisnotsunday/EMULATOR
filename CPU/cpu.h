@@ -1,4 +1,4 @@
 #ifndef CUP_H
 #define CUP_H
-int cpu_run(int initype);
+int cpu_run(int initype, int subinitype);
 #endif

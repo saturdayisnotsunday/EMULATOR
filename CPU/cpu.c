@@ -177,22 +177,27 @@ int interpreter(char *ins0, char *ins1, char *ins2, char *ins3, char *ins4){
         b_is_reference = is_register_or_jump(ins2);
     }
 
- if(!a_is_reference && !b_is_reference){
+ if(!a_is_reference && !b_is_reference)
+ {
     unsigned int result = arithematicunit(ins0, (unsigned int)a, (unsigned int)b);
 
     rest(ins3, ins4, result);
- } else if(a_is_reference || b_is_reference){
+ } else if(a_is_reference || b_is_reference)
+ {
      unsigned int a_val, b_val;
 
-     if (a_is_reference) {
+     if (a_is_reference) 
+     {
          ew(ins1);
          a_val = c.R[atoi(effi.ext2)];
          printf("R[%i] contains '%i'\n",atoi(effi.ext2), c.R[atoi(effi.ext2)]);
-     } else {
+     } else 
+     {
          a_val = (unsigned int)a;   // reuse the atoi(ins1) result already computed above
      }
 
-     if (b_is_reference) {
+     if (b_is_reference) 
+     {
          ew(ins2);
          b_val = c.R[atoi(effi.ext2)];
          printf("R[%i] contains '%i'\n",atoi(effi.ext2), c.R[atoi(effi.ext2)]);
@@ -209,6 +214,11 @@ int interpreter(char *ins0, char *ins1, char *ins2, char *ins3, char *ins4){
     ew(ins1);
     c.oR[atoi(effi.ext2)] = false;
     printf("[DEBUG, cpu.c,interpreter] freed R[%i]\n", atoi(effi.ext2));
+ }
+ //example: LOAD R1(or int or any valid value) 
+ // the thing i mentioned on paper was a mistake , it is only valid for disks but just too much for RAM
+ if(strcmp(ins0,"LOAD")==0){
+
  }
 
  }
@@ -258,9 +268,12 @@ int tokeassigner(char *line)
     return 0;
 }
 
-int cpu_run(int initype) 
+int cpu_run(int initype, int subinitype) 
 {
-    if(initype == 0){
+    if(initype == 0)
+    {
+       if(subinitype == 1)
+       { 
         printf("[DEBUG, cpu.c] initialization type 0\n");
         // i will be using documentations for getting read file program in C
         // source: https://stackoverflow.com/questions/174531/how-to-read-the-content-of-a-file-to-a-string-in-c
@@ -287,7 +300,8 @@ int cpu_run(int initype)
                     line_Count = 1;
                     for(size_t i = 0;i<bytesRead;i++)
                     {
-                        if(buffer[i] == '\n'){
+                        if(buffer[i] == '\n')
+                        {
                             line_Count++;
                         }
                     }
@@ -312,7 +326,8 @@ int cpu_run(int initype)
         }
         // now main work starts from here 
 
-        if (buffer){
+        if (buffer)
+        {
          char *line_save;
          char *line = strtok_r(c.instructions, "\r\n", &line_save);
          while (line != NULL) {
@@ -322,7 +337,8 @@ int cpu_run(int initype)
          line = strtok_r(NULL, "\r\n", &line_save);
         } 
         }
-        }
+       }
+    }
         
          
     return 0;
