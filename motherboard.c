@@ -2,5 +2,5 @@
 
 int main(void)
 {
-    return cpu_run(0);
+    return cpu_run(0,1);
 }

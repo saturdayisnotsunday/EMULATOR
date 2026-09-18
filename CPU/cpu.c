@@ -1,5 +1,5 @@
 //#define _POSIX_C_SOURCE 200809L
-
+#include "../ram.h"
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdio.h>
@@ -218,7 +218,22 @@ int interpreter(char *ins0, char *ins1, char *ins2, char *ins3, char *ins4){
  //example: LOAD R1(or int or any valid value) 
  // the thing i mentioned on paper was a mistake , it is only valid for disks but just too much for RAM
  if(strcmp(ins0,"LOAD")==0){
-
+     ew(ins1);
+     if(strcmp(effi.ext1,"R")==0){
+        
+        int addr = atoi(ins2);
+        char value = c.R[atoi(effi.ext2)];
+        ram_w(addr, value);
+        printf("[DEBUG] RAM at ADDR: %i contains %d\n",addr, value);
+        //ram_r ins 1(value)
+     }
+     if(strcmp(effi.ext1,"R")!=0){
+        //ram_r ins2(at) ins 1(value)
+        int addr = atoi(ins3);
+        char value = *ins1;
+        ram_w(addr, value);
+        printf("[DEBUG] RAM at ADDR: %i contains %d\n",addr, value);
+     }
  }
 
  }
