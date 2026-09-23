@@ -31,10 +31,6 @@ struct instructionformat{
    char ins3[10];
    char ins4[10];
 };
-struct extwordforinstruct{
-    char ext1[3];
-    char ext2[3];
-};
 // struct(s) over ===================================================
 
 
@@ -43,7 +39,6 @@ struct CPU c = {
     .oR = {false, false, false, false, false, false, false, false},
     .Rfull = 0,
 };
-struct extwordforinstruct effi;
 // struct(s) declaration over ===================================================
 
 
@@ -65,42 +60,31 @@ void fillRegister(int val, int i){
 }
 // extarct no and letters from , example like J7 -> J, 7 ; R1 -> R,1
 // source: https://www.google.com/search?q=how+to+extract+J+and+7+separately+in+two+variables+in+C+from+%22J7%22&sca_esv=444dee17e46a57e2&sxsrf=APpeQnsas3LaoSjPHTEjTzjqKvki9Vn42g%3A1788946108708&source=chrome.ob&fbs=ABfTbFVyMZGZf1hfvX9uKjN_-G8cxpBkeIeqYwoCbfNVc4vKE96grTuFPBRY0pmGfUF9Jyg22UXWVTXr_K4O7baggKlodDnOkiIlASZntHySiVh0bwiIMNUypEJaxFrEl8I0sOjne2qkxDLXy2NTy6FTlX-i0YI5jtw6x8Px1e5ht4KE5hM6eaUTrrz4L1UACk_d4pB2REBAHEJb5UrMvB9LeWHyWa1Gfg&vsint=&aep=1&ntc=1&cs=1&sa=X&ved=2ahUKEwjitNPKl-GWAxUGTmwGHVCgB1IQ2J8OegQIFhAD&biw=1920&bih=993&dpr=1&mstk=AUtExfArvDwH7_MMHa_rjMoXAPx9eJho2f5sxtcKYHQECjgoXkqsxI7kk1BhYFbRoIQEtl3FeOTOwIz2Pn6n2tWX2s7tni-721tzzn6NyWwCu2oiShJGsSD4hrd5TqJ9tk9PQj7So23RPPtVv39v5Ls5mSWrIUoeNdD0-xnk3J4Ba2WPCfD1n6zbHNTPuhz6aHHA4op4W_nlj1aJ9jeNe2RasLb8r-BmbP4BdwrSt4qw3_mg-R-POJv4ECYiAkhdUBe2VJDkMtZPw371oUXiAtwGygbye_DusvGluktwEV4ZmGzIodGb3eUU7iVYKl9G_OFLQFj4yJ5DRiZrog&csuir=1&atvm=2&mtid=yiahasX1II2dseMPhcztiAo&udm=50
-void ew(char word[]) {
-    int len = strlen(word); //some thing magical
-    // Safety check: ensure that string has at least a letter and a number
-    if (len < 2)
-    {
-        return; 
-    }
-    effi.ext1[0] = word[0];        // always takes the first character ('J')
-    effi.ext2[0] = word[len - 1];  // the last character ('1', '7', or '3')
-    effi.ext1[1] = '\0';
-    effi.ext2[1] = '\0';
-}
-
 void rest(char *ins3, char *ins4, int resultval){
-       if(strcmp(ins3, "STORE")==0)
+       if(strcmp(ins3, "STORE")==0 && strcmp(ins3,"0") != 0)
         {
-              ew(ins4); 
-              if(strcmp(effi.ext1, "R")==0){
-                fillRegister(resultval,atoi(effi.ext2));
-                printf("[DEBUG, cpu.c , rest()]stored '%i' at R%i\n",resultval, atoi(effi.ext2));
+               
+              if(ins4[0] == 'R'){
+                fillRegister(resultval, atoi(ins4 + 1));
+                printf("[DEBUG, cpu.c , rest()]stored '%i' at R%i\n",resultval, atoi(ins4 + 1));
                 //return;
               }
         }
-        if(strcmp(ins4,"HALT")==0){
+       if(strcmp(ins4,"HALT")==0){
             printf("[DEBUG, cpu.c , rest()] off\n");
             
             exit(EXIT_SUCCESS); // i guess it will stop there
-        } else if(strcmp(ins4,effi.ext1)==0){
-                if(strcmp(effi.ext1, "J")==0){
-                    printf("[DEBUG, cpu.c , rest()] not implemented yet\n");
-                } //else if(strcmp(effi.ext1, "R")==0){
+        }
+       
+       if(ins4[0] == 'J'){
+                    printf("[DEBUG, cpu.c , rest()] jump target %s detected; not implemented yet\n", ins4);
+                //else if(ins4[0] == 'R'){
                      
                 // }
                 // doing that much for additon was so time taking it took 37 minutes
                 // just copy and paste below and made some changes if needed from the above
         }
+
 }
 
 
@@ -179,18 +163,44 @@ int interpreter(char *ins0, char *ins1, char *ins2, char *ins3, char *ins4){
 
  if(!a_is_reference && !b_is_reference)
  {
-    unsigned int result = arithematicunit(ins0, (unsigned int)a, (unsigned int)b);
+    if( strcmp(ins0,"ADD")==0||strcmp(ins0,"SUB")==0||strcmp(ins0,"MUL")==0||strcmp(ins0,"DIV")==0){
+     unsigned int result = arithematicunit(ins0, (unsigned int)a, (unsigned int)b);
 
-    rest(ins3, ins4, result);
+     rest(ins3, ins4, result);
+                //unsigned int a_val, b_val;
+ 
+    }
+    
+    //example: LOAD R1(or int or any valid value) 
+    // the thing i mentioned on paper was a mistake , it is only valid for disks but just too much for RAM
+    if(strcmp(ins0,"LOAD")==0 && strcmp(ins4,"0")==0){
+        
+           
+        int addr = atoi(ins3);
+        char value = atoi(ins1);
+        ram_w(addr, value);
+        printf("[DEBUG] RAM write: address %i <- value %d\n", addr, value);
+           //ram_r ins 1(value)
+        
+    }
+   
+    if(strcmp(ins0,"DIFF")==0){
+          unsigned int subval = arithematicunit("SUB",(unsigned int)a, (unsigned int)b);
+           
+          rest(ins3, ins4, subval);
+          printf("[DEBUG] DIFF: %u - %u = %u;\n", (unsigned int)a, (unsigned int)b, subval);
+             
+        }
+
+    
  } else if(a_is_reference || b_is_reference)
  {
      unsigned int a_val, b_val;
 
      if (a_is_reference) 
      {
-         ew(ins1);
-         a_val = c.R[atoi(effi.ext2)];
-         printf("R[%i] contains '%i'\n",atoi(effi.ext2), c.R[atoi(effi.ext2)]);
+         a_val = c.R[atoi(ins1 + 1)];
+         printf("R[%i] contains '%i'\n",atoi(ins1 + 1), c.R[atoi(ins1 + 1)]);
      } else 
      {
          a_val = (unsigned int)a;   // reuse the atoi(ins1) result already computed above
@@ -198,41 +208,44 @@ int interpreter(char *ins0, char *ins1, char *ins2, char *ins3, char *ins4){
 
      if (b_is_reference) 
      {
-         ew(ins2);
-         b_val = c.R[atoi(effi.ext2)];
-         printf("R[%i] contains '%i'\n",atoi(effi.ext2), c.R[atoi(effi.ext2)]);
+         b_val = c.R[atoi(ins2 + 1)];
+         printf("R[%i] contains '%i'\n",atoi(ins2 + 1), c.R[atoi(ins2 + 1)]);
      } else {
          b_val = (unsigned int)b;   // reuse the atoi(ins2) result alrady computed above
      }
 
-     unsigned int result = arithematicunit(ins0, a_val, b_val);
-     printf("passed ins3:%s,ins4:%s\n", ins3, ins4);
-     rest(ins3, ins4, result);
- if(strcmp(ins0,"FREE")^(strcmp(ins2, "0")==0)^(strcmp(ins3, "0")==0)^(strcmp(ins4, "0")==0))
+     if(strcmp(ins0, "DIFF") == 0){
+       unsigned int subval = arithematicunit("SUB", a_val, b_val);
+       rest(ins3, ins4, subval);
+       printf("[DEBUG] DIFF: %u - %u = %u;\n", a_val, b_val, subval);
+     } else {
+       unsigned int result = arithematicunit(ins0, a_val, b_val);
+       printf("passed ins3:%s,ins4:%s\n", ins3, ins4);
+       rest(ins3, ins4, result);
+     }
+ if(strcmp(ins0,"FREE")==0)
  {
     printf("FREE block starts\n");
-    ew(ins1);
-    c.oR[atoi(effi.ext2)] = false;
-    printf("[DEBUG, cpu.c,interpreter] freed R[%i]\n", atoi(effi.ext2));
+    c.oR[atoi(ins1 + 1)] = false;
+    printf("[DEBUG, cpu.c,interpreter] freed R[%i]\n", atoi(ins1 + 1));
  }
  //example: LOAD R1(or int or any valid value) 
  // the thing i mentioned on paper was a mistake , it is only valid for disks but just too much for RAM
  if(strcmp(ins0,"LOAD")==0){
-     ew(ins1);
-     if(strcmp(effi.ext1,"R")==0){
+     if(ins1[0] == 'R'){
         
         int addr = atoi(ins2);
-        char value = c.R[atoi(effi.ext2)];
+        char value = c.R[atoi(ins1 + 1)];
         ram_w(addr, value);
-        printf("[DEBUG] RAM at ADDR: %i contains %d\n",addr, value);
+        printf("[DEBUG] RAM write: address %i <- value %d\n", addr, value);
         //ram_r ins 1(value)
      }
-     if(strcmp(effi.ext1,"R")!=0){
+     if(ins1[0] != 'R'){
         //ram_r ins2(at) ins 1(value)
         int addr = atoi(ins3);
         char value = *ins1;
         ram_w(addr, value);
-        printf("[DEBUG] RAM at ADDR: %i contains %d\n",addr, value);
+        printf("[DEBUG] RAM write: address %i <- value %d\n", addr, value);
      }
  }
 
@@ -277,7 +290,6 @@ int tokeassigner(char *line)
     strcpy(it.action, action);
     
     strcpy(it.end, destination);
-    ew(destination);
     interpreter(it._operator,it.arg1,it.arg2, it.action, it.end);
     
     return 0;
