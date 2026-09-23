@@ -123,4 +123,16 @@ Click the dropdown below to view my complete system reasoning, design :
 ### Page 11
 ![Page 11](pg11.jpg)
 
+
+### Page 12
+![Page 12](pg12.jpg)
+
+
+### Page 13
+![Page 13](pg13.jpg)
+
+
+### Page 14
+![Page 14](pg14.jpg)
+
 https://github.com/saturdayisnotsunday/EMULATOR
