@@ -16,7 +16,7 @@ a quaternary architecture(if research went successful), where each computational
 
 The goal is not simply to emulate an existing processor, but to understand the
  hardware architecture and the software that depends on it.
- For more of me visit:[DynamicComplianceMesh] (www.github.com/saturdayisnotsunday/DynamicComplianceMesh)
+ For more of me visit:[DynamicComplianceMesh](www.github.com/saturdayisnotsunday/DynamicComplianceMesh)
 
 [Photonic Processing Unit](https://github.com/saturdayisnotsunday/Photonic-Processing-Unit)
 
