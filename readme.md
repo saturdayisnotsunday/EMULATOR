@@ -66,6 +66,7 @@ The goal is not simply to emulate an existing processor, but to understand the
 <p align="center">
   
     [+] to debug the issue for why loop was not woking it was due to wrong conditioning of k==line_Count it should be < not ==
+    ``` Claude helped a lot in implementing jump, but i haven't copied it blindly, I asked sonnet 5 to follow my signature style to address it. ```
 
     
 </p>

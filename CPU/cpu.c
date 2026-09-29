@@ -10,12 +10,16 @@
 
 
 // struct(s) begins ===================================================
+
+
 struct CPU {
     int R[8];
     bool oR[8];
     int Rfull;
-    char *instructions; //overflow took an hour to debug that is cause segment fault issue
-    // rest _ _ _
+    char *instructions;
+    int pc;            // current line index
+    bool jump;         // set true by rest() when a jump should happen
+    int jump_target;   // line index to jump to
 };
 struct instructions{
       char _operator[10]; //0
@@ -38,6 +42,9 @@ struct instructionformat{
 struct CPU c = {
     .oR = {false, false, false, false, false, false, false, false},
     .Rfull = 0,
+    .pc = 0,
+    .jump = false,
+    .jump_target = -1,
 };
 // struct(s) declaration over ===================================================
 
@@ -77,14 +84,20 @@ void rest(char *ins3, char *ins4, int resultval){
         }
        
        if(ins4[0] == 'J'){
-                    printf("[DEBUG, cpu.c , rest()] jump target %s detected; not implemented yet\n", ins4);
-                //else if(ins4[0] == 'R'){
-                     
-                // }
-                // doing that much for additon was so time taking it took 37 minutes
-                // just copy and paste below and made some changes if needed from the above
+            //printf("[DEBUG, cpu.c , rest()] jump target %s detected; not implemented yet\n", ins4);
+            int target = atoi(ins4 + 1) -1;// now J7 means jump to J6, it is like reading is from 1 to ... , but for computer its 0 to ... ;
+            c.jump = true;
+            c.jump_target = target;
+            printf("[DEBUG, cpu.c , rest()] jumping to line %i\n", target + 1);
         }
 
+}
+
+/* ERR <message> is used by ROM after a failed DIFF check. */
+static void report_rom_error(const char *message)
+{
+    fprintf(stderr, "ERR -> %s\n", message[0] != '\0' ? message : "UNKNOWN");
+    exit(EXIT_FAILURE);
 }
 
 
@@ -153,6 +166,11 @@ int interpreter(char *ins0, char *ins1, char *ins2, char *ins3, char *ins4){
     bool a_is_reference = false;
     bool b_is_reference = false;
 
+    /* ERR has only one required argument, unlike arithmetic instructions. */
+    if (strcmp(ins0, "ERR") == 0) {
+        report_rom_error(ins1);
+    }
+
     /* atoi returns 0 for 0 and for non-numeric operands, so inspect Rn/Jn. */
     if (a == 0) {
         a_is_reference = is_register_or_jump(ins1);
@@ -173,24 +191,30 @@ int interpreter(char *ins0, char *ins1, char *ins2, char *ins3, char *ins4){
     
     //example: LOAD R1(or int or any valid value) 
     // the thing i mentioned on paper was a mistake , it is only valid for disks but just too much for RAM
-    if(strcmp(ins0,"LOAD")==0 && strcmp(ins4,"0")==0){
+    if(strcmp(ins0,"LOAD")==0){
         
            
         int addr = atoi(ins3);
         char value = atoi(ins1);
         ram_w(addr, value);
         printf("[DEBUG] RAM write: address %i <- value %d\n", addr, value);
+        rest(ins3, ins4 , value);
            //ram_r ins 1(value)
         
     }
    
     if(strcmp(ins0,"DIFF")==0){
           unsigned int subval = arithematicunit("SUB",(unsigned int)a, (unsigned int)b);
-           
-          rest(ins3, ins4, subval);
-          printf("[DEBUG] DIFF: %u - %u = %u;\n", (unsigned int)a, (unsigned int)b, subval);
+          if(atoi(ins3)==subval){ 
+           rest(ins3, ins4, 0);
+           printf("[DEBUG] DIFF: %u - %u = %u;\n", (unsigned int)a, (unsigned int)b, subval);
+          }
              
         }
+    if(strcmp(ins4,"HALT")==0){
+        printf("HALT -> exit \n");
+        exit(EXIT_SUCCESS);
+    }
 
     
  } else if(a_is_reference || b_is_reference)
@@ -216,8 +240,10 @@ int interpreter(char *ins0, char *ins1, char *ins2, char *ins3, char *ins4){
 
      if(strcmp(ins0, "DIFF") == 0){
        unsigned int subval = arithematicunit("SUB", a_val, b_val);
-       rest(ins3, ins4, subval);
-       printf("[DEBUG] DIFF: %u - %u = %u;\n", a_val, b_val, subval);
+        if(atoi(ins3)==subval){ 
+           rest(ins3, ins4, 0);
+           printf("[DEBUG] DIFF: %u - %u = %u;\n", (unsigned int)a, (unsigned int)b, subval);
+          }
      } else {
        unsigned int result = arithematicunit(ins0, a_val, b_val);
        printf("passed ins3:%s,ins4:%s\n", ins3, ins4);
@@ -225,9 +251,13 @@ int interpreter(char *ins0, char *ins1, char *ins2, char *ins3, char *ins4){
      }
  if(strcmp(ins0,"FREE")==0)
  {
+   if(strcmp(ins1,"RAM")!=0){
     printf("FREE block starts\n");
     c.oR[atoi(ins1 + 1)] = false;
     printf("[DEBUG, cpu.c,interpreter] freed R[%i]\n", atoi(ins1 + 1));
+}//else if(strcmp(ins1, "RAM")==0){
+  // for future releases     
+//    }
  }
  //example: LOAD R1(or int or any valid value) 
  // the thing i mentioned on paper was a mistake , it is only valid for disks but just too much for RAM
@@ -247,6 +277,7 @@ int interpreter(char *ins0, char *ins1, char *ins2, char *ins3, char *ins4){
         ram_w(addr, value);
         printf("[DEBUG] RAM write: address %i <- value %d\n", addr, value);
      }
+     
  }
 
  }
@@ -281,15 +312,16 @@ int tokeassigner(char *line)
     destination = strtok_r(NULL, " ", &token_save);
 
     
-    strcpy(it._operator,operator);
-    
-    strcpy(it.arg1, arg1);
-    
-    strcpy(it.arg2, arg2);
-    
-    strcpy(it.action, action);
-    
-    strcpy(it.end, destination);
+    if (operator == NULL) {
+        return 0; /* Ignore an empty ROM line. */
+    }
+
+    /* ERR needs just its message; use empty strings for omitted operands. */
+    snprintf(it._operator, sizeof(it._operator), "%s", operator);
+    snprintf(it.arg1, sizeof(it.arg1), "%s", arg1 != NULL ? arg1 : "");
+    snprintf(it.arg2, sizeof(it.arg2), "%s", arg2 != NULL ? arg2 : "");
+    snprintf(it.action, sizeof(it.action), "%s", action != NULL ? action : "");
+    snprintf(it.end, sizeof(it.end), "%s", destination != NULL ? destination : "");
     interpreter(it._operator,it.arg1,it.arg2, it.action, it.end);
     
     return 0;
@@ -355,14 +387,30 @@ int cpu_run(int initype, int subinitype)
 
         if (buffer)
         {
+         #define MAX_LINES 100
+         char *lines[MAX_LINES];
+         int line_count = 0 ;
+
          char *line_save;
          char *line = strtok_r(c.instructions, "\r\n", &line_save);
-         while (line != NULL) {
-         printf("Line content: %s\n", line);
-         printf("[DEBUG, cpu.c, cpu_run()] given to token assinger: %s\n", line);
-         tokeassigner(line);
-         line = strtok_r(NULL, "\r\n", &line_save);
-        } 
+         while (line != NULL && line_count < MAX_LINES) {
+            lines[line_count++] = line;
+          printf("Line content: %s\n", line);
+          printf("[DEBUG, cpu.c, cpu_run()] given to token assinger: %s\n", line);
+          //tokeassigner(line);
+          line = strtok_r(NULL, "\r\n", &line_save);
+        }
+         c.pc = 0;
+         while(c.pc < line_count){
+           printf("line content: %s\n",lines[c.pc]);
+           tokeassigner(lines[c.pc]);
+           if(c.jump == true){
+            c.pc = c.jump_target;
+            c.jump = false;
+           }else{
+            c.pc++;
+           }
+         } 
         }
        }
     }
