@@ -20,6 +20,7 @@ struct CPU {
     int pc;            // current line index
     bool jump;         // set true by rest() when a jump should happen
     int jump_target;   // line index to jump to
+    bool alu_err;
 };
 struct instructions{
       char _operator[10]; //0
@@ -45,6 +46,7 @@ struct CPU c = {
     .pc = 0,
     .jump = false,
     .jump_target = -1,
+    .alu_err  = false
 };
 // struct(s) declaration over ===================================================
 
@@ -92,14 +94,6 @@ void rest(char *ins3, char *ins4, int resultval){
         }
 
 }
-
-/* ERR <message> is used by ROM after a failed DIFF check. */
-static void report_rom_error(const char *message)
-{
-    fprintf(stderr, "ERR -> %s\n", message[0] != '\0' ? message : "UNKNOWN");
-    exit(EXIT_FAILURE);
-}
-
 
 // all voids over ========================================================================================
 
@@ -166,11 +160,6 @@ int interpreter(char *ins0, char *ins1, char *ins2, char *ins3, char *ins4){
     bool a_is_reference = false;
     bool b_is_reference = false;
 
-    /* ERR has only one required argument, unlike arithmetic instructions. */
-    if (strcmp(ins0, "ERR") == 0) {
-        report_rom_error(ins1);
-    }
-
     /* atoi returns 0 for 0 and for non-numeric operands, so inspect Rn/Jn. */
     if (a == 0) {
         a_is_reference = is_register_or_jump(ins1);
@@ -181,6 +170,11 @@ int interpreter(char *ins0, char *ins1, char *ins2, char *ins3, char *ins4){
 
  if(!a_is_reference && !b_is_reference)
  {
+    if(strcmp(ins0,"ERR")==0 && c.alu_err == true){
+        printf("ERR -> %s\n", ins1);
+        exit(EXIT_FAILURE);
+    }
+
     if( strcmp(ins0,"ADD")==0||strcmp(ins0,"SUB")==0||strcmp(ins0,"MUL")==0||strcmp(ins0,"DIV")==0){
      unsigned int result = arithematicunit(ins0, (unsigned int)a, (unsigned int)b);
 
@@ -241,8 +235,11 @@ int interpreter(char *ins0, char *ins1, char *ins2, char *ins3, char *ins4){
      if(strcmp(ins0, "DIFF") == 0){
        unsigned int subval = arithematicunit("SUB", a_val, b_val);
         if(atoi(ins3)==subval){ 
+           c.alu_err = false;
            rest(ins3, ins4, 0);
-           printf("[DEBUG] DIFF: %u - %u = %u;\n", (unsigned int)a, (unsigned int)b, subval);
+           printf("[DEBUG] DIFF: %u - %u = %u;\n", (unsigned int)a_val, (unsigned int)b_val, subval);
+          }else{
+            c.alu_err = true;
           }
      } else {
        unsigned int result = arithematicunit(ins0, a_val, b_val);
