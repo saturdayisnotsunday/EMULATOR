@@ -205,6 +205,13 @@ int interpreter(char *ins0, char *ins1, char *ins2, char *ins3, char *ins4){
           }
              
         }
+    if(strcmp(ins0,"PRT")==0){
+        if(ins2[0] == '\0'){
+            printf("%s\n", ins1);
+        }else{
+            printf("%s %s\n", ins1, ins2);
+        }
+    }
     if(strcmp(ins4,"HALT")==0){
         printf("HALT -> exit \n");
         exit(EXIT_SUCCESS);
@@ -274,7 +281,22 @@ int interpreter(char *ins0, char *ins1, char *ins2, char *ins3, char *ins4){
         ram_w(addr, value);
         printf("[DEBUG] RAM write: address %i <- value %d\n", addr, value);
      }
-     
+ }
+
+ if(strcmp(ins0,"PRT")==0){
+    if(ins1[0]=='R'){
+        printf("%i", c.R[atoi(ins1 + 1)]);
+    }else{
+        printf("%s", ins1);
+    }
+
+    if(ins2[0]=='R'){
+        printf(" %i\n", c.R[atoi(ins2 + 1)]);
+    }else if(ins2[0] != '\0'){
+        printf(" %s\n", ins2);
+    }else{
+        printf("\n");
+    }
  }
 
  }
