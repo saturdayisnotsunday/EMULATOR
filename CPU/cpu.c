@@ -211,6 +211,7 @@ int interpreter(char *ins0, char *ins1, char *ins2, char *ins3, char *ins4){
         }else{
             printf("%s %s\n", ins1, ins2);
         }
+        rest(ins3, ins4, 0);
     }
     if(strcmp(ins4,"HALT")==0){
         printf("HALT -> exit \n");
@@ -297,6 +298,7 @@ int interpreter(char *ins0, char *ins1, char *ins2, char *ins3, char *ins4){
     }else{
         printf("\n");
     }
+    rest(ins3, ins4, 0);
  }
 
  }
@@ -358,7 +360,7 @@ int cpu_run(int initype, int subinitype)
         char * buffer = 0;
         long length;
         long line_Count;
-        FILE * f = fopen ("rom.txt", "r"); // Changed to "r" if it's text; keep "rb" if it's a raw binary
+        FILE * f = fopen ("rom.q", "r"); // Changed to "r" if it's text; keep "rb" if it's a raw binary
 
         if (f)
         {
@@ -392,7 +394,7 @@ int cpu_run(int initype, int subinitype)
             }
             
             fclose (f);
-            printf("[DEBUG, cpu.c , cpu_run()] content: %s\n", buffer);
+        //    printf("[DEBUG, cpu.c , cpu_run()] content: %s\n", buffer);
             //buffer = c.instructions; --> this was the issue 
             //fixed :
             //strcpy(c.instructions, buffer);
@@ -414,14 +416,14 @@ int cpu_run(int initype, int subinitype)
          char *line = strtok_r(c.instructions, "\r\n", &line_save);
          while (line != NULL && line_count < MAX_LINES) {
             lines[line_count++] = line;
-          printf("Line content: %s\n", line);
-          printf("[DEBUG, cpu.c, cpu_run()] given to token assinger: %s\n", line);
+         // printf("Line content: %s\n", line);
+         // printf("[DEBUG, cpu.c, cpu_run()] given to token assinger: %s\n", line);
           //tokeassigner(line);
           line = strtok_r(NULL, "\r\n", &line_save);
         }
          c.pc = 0;
          while(c.pc < line_count){
-           printf("line content: %s\n",lines[c.pc]);
+        //   printf("line content: %s\n",lines[c.pc]);
            tokeassigner(lines[c.pc]);
            if(c.jump == true){
             c.pc = c.jump_target;
