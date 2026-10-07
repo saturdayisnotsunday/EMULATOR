@@ -24,7 +24,7 @@ struct CPU {
 };
 struct instructions{
       char _operator[10]; //0
-      char arg1[10];     //1
+      char arg1[20];     //1
       char arg2[10];     //2
       char action[10];   //3
       char end[10];      //4

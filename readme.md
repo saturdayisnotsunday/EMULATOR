@@ -55,7 +55,7 @@ The goal is not simply to emulate an existing processor, but to understand the
      [+] i dropped the above tokenisation idea and tired to deduce how to do it and came up with using the strtok the theory is clear and i explained it to chatgpt and asked for minimal exact syntax(line 69 whic which was line 60 previously)
      [+]Took help from this source:[text](https://stackoverflow.com/questions/174531/how-to-read-the-content-of-a-file-to-a-string-in-c)    for effectively getting a file reading program in C
      [+] run cpu_run() function in motherboard.c as it used something unexpected and which i never knew
-
+     [+] to understand what is a null terminator '\0' for the PRT
 </p>
 
 </details>
@@ -81,7 +81,17 @@ The goal is not simply to emulate an existing processor, but to understand the
     Now the real issue left is to implement RAM(emulated) so it will be taking enough of time, the 
     use is clear but the problem is how to implement in C syntx + enabling cpu.c to access it through motherboard.c
     => finally got a soultion, i will create sub initypes to keep a main initype run main initype unitl the end of its purpose
-cannot do any work at Saturday and sunday
+    cannot do any work at Saturday and sunday
+    => to be honest this block is not my creation : '''
+        /* ERR needs just its message; use empty strings for omitted operands. */
+    snprintf(it._operator, sizeof(it._operator), "%s", operator);
+    snprintf(it.arg1, sizeof(it.arg1), "%s", arg1 != NULL ? arg1 : "");
+    snprintf(it.arg2, sizeof(it.arg2), "%s", arg2 != NULL ? arg2 : "");
+    snprintf(it.action, sizeof(it.action), "%s", action != NULL ? action : "");
+    snprintf(it.end, sizeof(it.end), "%s", destination != NULL ? destination : "");
+    interpreter(it._operator,it.arg1,it.arg2, it.action, it.end);
+    '''
+    it was added my codex, it is basically string number printf
     
 
 
