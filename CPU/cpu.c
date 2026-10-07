@@ -11,7 +11,10 @@
 
 // struct(s) begins ===================================================
 
-
+struct cpuState{
+  int init_state;
+  int sb_init_state;
+};
 struct CPU {
     int R[8];
     bool oR[8];
@@ -21,6 +24,8 @@ struct CPU {
     bool jump;         // set true by rest() when a jump should happen
     int jump_target;   // line index to jump to
     bool alu_err;
+    int ini_state;
+    int sb_init_state;
 };
 struct instructions{
       char _operator[10]; //0
@@ -46,8 +51,11 @@ struct CPU c = {
     .pc = 0,
     .jump = false,
     .jump_target = -1,
-    .alu_err  = false
+    .alu_err  = false,
+    // .ini_state = 0,
+    // .sb_init_state = 0,
 };
+struct cpuState cs;
 // struct(s) declaration over ===================================================
 
 
@@ -173,6 +181,14 @@ int interpreter(char *ins0, char *ins1, char *ins2, char *ins3, char *ins4){
     if(strcmp(ins0,"ERR")==0 && c.alu_err == true){
         printf("ERR -> %s\n", ins1);
         exit(EXIT_FAILURE);
+    }
+
+    if(strcmp(ins0, "INI")==0){
+        if(strcmp(ins2,"SB")==0){
+            cs.init_state = atoi(ins1);
+            cs.sb_init_state = atoi(ins3);
+
+        }
     }
 
     if( strcmp(ins0,"ADD")==0||strcmp(ins0,"SUB")==0||strcmp(ins0,"MUL")==0||strcmp(ins0,"DIV")==0){
@@ -348,7 +364,7 @@ int tokeassigner(char *line)
     return 0;
 }
 
-int cpu_run(int initype, int subinitype) 
+struct cpuState cpu_run(int initype, int subinitype) 
 {
     if(initype == 0)
     {
@@ -435,7 +451,13 @@ int cpu_run(int initype, int subinitype)
         }
        }
     }
+    // if(c.ini_state == 1){
+
+    // }
         
          
-    return 0;
+    return (struct cpuState){
+        cs.init_state,
+        cs.sb_init_state
+    };
 }

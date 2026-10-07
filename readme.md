@@ -56,6 +56,15 @@ The goal is not simply to emulate an existing processor, but to understand the
      [+]Took help from this source:[text](https://stackoverflow.com/questions/174531/how-to-read-the-content-of-a-file-to-a-string-in-c)    for effectively getting a file reading program in C
      [+] run cpu_run() function in motherboard.c as it used something unexpected and which i never knew
      [+] to understand what is a null terminator '\0' for the PRT
+     [+] guided me to use:struct CPUState cpu_run(int initype, int subinitype)
+        {
+            ...
+            return (struct CPUState){
+                c.ini_state,
+                c.sb_init_state
+            };
+        }
+        to return values back to motherboard.c
 </p>
 
 </details>
