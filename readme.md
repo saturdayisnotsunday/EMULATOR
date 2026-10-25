@@ -1,8 +1,4 @@
-<p align="center">
-  <img src="./banr.png" width="100%" alt="Header Banner" />
-</p>
 
-<h1 align="center"><b>EMULATOR</b></h1>
 
 NOTE: I have reached the saturation level jsut after adding PRT; now once i got any intution about how to implement virtual disk and kernel i will procced,NOT GOING TO DISCONTINUE, for now i am going to make a new repo,BYE!.
 A custom CPU emulator and bare-metal software stack built from first principles.
