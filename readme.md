@@ -1,5 +1,5 @@
 <h1>                                  EMULATOR</h1>
-
+!!! I am disappointed with this progress(current); I am struggling to continue it 
 NOTE: I have reached the saturation level jsut after adding PRT; now once i got any intution about how to implement virtual disk and kernel i will procced,NOT GOING TO DISCONTINUE, for now i am going to make a new repo,BYE!.
 A custom CPU emulator and bare-metal software stack built from first principles.
 
